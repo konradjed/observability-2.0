@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-elastic-logging",
+  "version": "1.0.0",
+  "description": "Example Node.js app with logs sent to Elasticsearch",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "winston": "^3.10.0",
+    "uuid": "^9.0.0"
+  }
+}
