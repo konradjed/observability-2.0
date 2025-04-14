@@ -1,35 +1,95 @@
+#extensions:
+#  basicauth/client:
+#    client_auth:
+#      username: elastic
+#      password: qcPT-3_vxi73dN2n_cKF
+
 receivers:
   otlp:
     protocols:
-      grpc:
       http:
+        endpoint: 0.0.0.0:4318
+#      grpc:
+#        endpoint: 0.0.0.0:4317
+  docker_stats:
+    endpoint: unix:///var/run/docker.sock  # Adjust this path based on your system
+    collection_interval: 30s
+    timeout: 10s
+    api_version: "1.25"  # Note the quotes around the version number
+    metrics:
+      container.uptime:
+        enabled: true
+      container.restarts:
+        enabled: true
+      container.network.io.usage.rx_errors:
+        enabled: true
+      container.network.io.usage.tx_errors:
+        enabled: true
+      container.network.io.usage.rx_packets:
+        enabled: true
+      container.network.io.usage.tx_packets:
+        enabled: true
+      container.cpu.usage.percpu:
+        enabled: true
+      container.pids.count:
+        enabled: true
 
 processors:
   batch:
+    timeout: 1s
+    send_batch_size: 1024
   memory_limiter:
     check_interval: 1s
-    limit_mib: 4000
-    spike_limit_mib: 500
+    limit_mib: 100
+  resourcedetection/system:
+    detectors: [ "system" ]
+    system:
+      hostname_sources: [ "dns", "os" ]
+  resourcedetection/docker:
+    detectors: [ env, docker ]
+    timeout: 2s
+    override: false
 
 exporters:
   debug:
     verbosity: detailed
-  otlp/elastic:
+    sampling_initial: 5
+    sampling_thereafter: 200
+#  otlp/elastic:
+#    endpoint: "apm-server:8200"
+#    headers:
+#       Elastic APM Server secret token
+#      Authorization: "ApiKey Z2hsNUpKWUJQT1VmUnR0OF9BeHU6bDBlWElkOTNRNWEzQmZHclRwbG9ndw=="
+#    tls:
+#      insecure: true
+#    auth:
+#      authenticator: basicauth/client
+  otlp:
     endpoint: "apm-server:8200"
     tls:
       insecure: true
+#    headers:
+      # Elastic APM Server secret token
+#      Authorization: "ApiKey Z2hsNUpKWUJQT1VmUnR0OF9BeHU6bDBlWElkOTNRNWEzQmZHclRwbG9ndw=="
+
 
 service:
+#  extensions: [basicauth/client]
+#  telemetry:
+#    logs:
+#      level: "debug"
+#      development: true
+#      encoding: "json"
   pipelines:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlp/elastic, debug]
+      exporters: [debug, otlp]
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlp/elastic, debug]
+      exporters: [debug, otlp]
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlp/elastic, debug]
+      exporters: [debug, otlp]

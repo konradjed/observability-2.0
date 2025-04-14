@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-elastic-logging",
+  "version": "1.0.0",
+  "description": "Example Node.js app with logs sent to Elasticsearch",
+  "main": "../bck/index.js",
+  "scripts": {
+    "start": "node ../bck/index.js"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.56.1",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.57.2",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.57.2",
+    "@opentelemetry/host-metrics": "^0.36.0",
+    "@opentelemetry/resources": "^1.30.1",
+    "@opentelemetry/sdk-metrics": "^1.30.1",
+    "@opentelemetry/sdk-node": "^0.57.2",
+    "@opentelemetry/sdk-trace-base": "^1.30.1",
+    "@opentelemetry/semantic-conventions": "^1.30.0",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0",
+    "winston": "^3.10.0"
+  }
+}

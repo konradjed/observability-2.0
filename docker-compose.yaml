@@ -1,17 +1,16 @@
-version: '3'
+#version: '3'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
     container_name: elasticsearch
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - xpack.security.audit.enabled=true
-#      - ELASTIC_PASSWORD=qcPT-3_vxi73dN2n_cKF
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=qcPT-3_vxi73dN2n_cKF
     ports:
       - "9200:9200"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
+      - ./elastic/config.yaml:/usr/share/elasticsearch/config/elasticsearch.yml
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.0
@@ -19,9 +18,9 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-#      - ELASTICSEARCH_USERNAME=elastic
-#      - ELASTICSEARCH_PASSWORD=qcPT-3_vxi73dN2n_cKF
+      - ELASTICSEARCH_SERVICEACCOUNTTOKEN=AAEAAWVsYXN0aWMva2liYW5hL3Rva2VuMTowVHNobEljc1RTQ3RLZFhWUHNkbG1R
+    volumes:
+      - ./kibana/config.yaml:/usr/share/kibana/config/kibana.yml
     depends_on:
       - elasticsearch
 
@@ -31,11 +30,23 @@ services:
     ports:
       - "8200:8200"
     environment:
-      - output.elasticsearch.hosts=["elasticsearch:9200"]
-      - output.elasticsearch.username=elastic
-      - output.elasticsearch.password=changeme
+#      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#      - ELASTICSEARCH_USERNAME=elastic
+#      - ELASTICSEARCH_USERNAME=qcPT-3_vxi73dN2n_cKF
+#      - kibana.host=http://kibana:5601
+#      - logging.level=debug
+      - apm-server.rum.enabled=true
+#      - setup.kibana.host=kibana:5601
+#      - setup.template.settings.index.number_of_replicas=0
+#      - apm-server.kibana.enabled=true
+#      - apm-server.kibana.host=kibana:5601
+#      - output.elasticsearch.username=elastic
+#      - output.elasticsearch.password=changeme
+    volumes:
+      - ./apm/config.yaml:/usr/share/apm-server/apm-server.yml
     depends_on:
       - elasticsearch
+      - kibana
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
@@ -44,7 +55,7 @@ services:
     volumes:
       - ./otel/config.yaml:/etc/otel-collector-config.yaml
     ports:
-      - "4317:4317"  # OTLP gRPC
+#      - "4317:4317"  # OTLP gRPC
       - "4318:4318"  # OTLP HTTP
       - "8888:8888"  # Metrics endpoint
     depends_on:

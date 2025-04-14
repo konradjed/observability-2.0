@@ -1,0 +1,32 @@
+apm-server:
+  host: "0.0.0.0:8200"
+  rum:
+    enabled: true
+  kibana:
+    enabled: true
+    host: "kibana:5601"
+#  ilm:
+#    setup:
+#      enabled: true
+#      overwrite: true
+#      policy: "apm-rollover-30-days"
+
+elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "qcPT-3_vxi73dN2n_cKF"
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  username: "elastic"
+  password: "qcPT-3_vxi73dN2n_cKF"
+
+setup.kibana:
+  host: "kibana:5601"
+
+logging:
+  level: info
+  json: false
+
+kibana:
+  host: http://kibana:5601

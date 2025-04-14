@@ -1,0 +1,21 @@
+cluster.name: "elasticsearch"
+network.host: 0.0.0.0
+
+discovery.type: single-node
+bootstrap.memory_lock: true
+
+#xpack.license.self_generated.type: basic
+xpack:
+  security:
+    enabled: true
+    transport.ssl.enabled: false
+    audit:
+      enabled: true
+  monitoring.collection.enabled: true
+
+http:
+  cors:
+    enabled: true
+    allow-origin: "*"
+    allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+    allow-headers: X-Requested-With, X-Auth-Token, Content-Type, Content-Length
