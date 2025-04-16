@@ -1,45 +1,14 @@
-const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
-
-// For troubleshooting, set the log level to DiagLogLevel.DEBUG
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
-
-// Initialize OpenTelemetry (EDOT style) – must come first!
 require('./opentelemetry-instrumentation');
-
 const express = require('express');
 const { logger, requestLogger, createCustomSpan } = require('./logger');
-// const { registerMetrics } = require('./metrics');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const router = express.Router();
 
-// Register custom metrics (instrumentation for EDOT observability)
-// const metrics = registerMetrics();
-
-// Use the request logger middleware (logs now include trace identifiers)
 app.use(requestLogger);
 
-// Basic routes to demonstrate distributed tracing
-app.get('/', (req, res) => {
-    req.logger.info('Processing home route');
-    res.send('{"code":"200","message":"Hello World!"}');
-});
-
-app.get('/slow', async (req, res) => {
-    req.logger.info('Processing slow route');
-
-    // Create a custom span to simulate a slow operation
-    await createCustomSpan('slow.operation', async (span) => {
-        span.setAttribute('operation.type', 'delay');
-        req.logger.debug('Starting slow operation');
-        await new Promise(resolve => setTimeout(resolve, 500));
-        req.logger.debug('Finished slow operation');
-    });
-
-    res.send('{"code":"200","message":"This was a slow response"}');
-});
-
-app.get('/error', (req, res) => {
+router.get('/error', (req, res) => {
     req.logger.info('Processing error route');
     try {
         // Simulated error for demonstration
@@ -50,7 +19,7 @@ app.get('/error', (req, res) => {
     }
 });
 
-app.get('/users/:id', (req, res) => {
+router.get('/users/:id', (req, res) => {
     const userId = req.params.id;
     req.logger.info('Fetching user data', { userId });
 
@@ -58,7 +27,7 @@ app.get('/users/:id', (req, res) => {
     createCustomSpan('database.query', async (span) => {
         span.setAttribute('db.operation', 'findUser');
         span.setAttribute('db.user_id', userId);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 150));
 
         if (userId === '999') {
             req.logger.warn('User not found', { userId });
@@ -70,6 +39,8 @@ app.get('/users/:id', (req, res) => {
         res.json(user);
     });
 });
+
+app.use(router)
 
 // Start the server
 app.listen(port, () => {

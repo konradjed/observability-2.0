@@ -60,6 +60,17 @@ services:
       - "8888:8888"  # Metrics endpoint
     depends_on:
       - apm-server
+    links:
+      - socat
+
+  # mac workaround for docker-stats
+  socat:
+    image: bpack/socat
+    command: TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "2375"
 
   fluent-bit:
     image: fluent/fluent-bit:latest

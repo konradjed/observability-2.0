@@ -12,10 +12,10 @@ receivers:
 #      grpc:
 #        endpoint: 0.0.0.0:4317
   docker_stats:
-    endpoint: unix:///var/run/docker.sock  # Adjust this path based on your system
+    endpoint: tcp://socat:2375  # Adjust this path based on your system
     collection_interval: 30s
     timeout: 10s
-    api_version: "1.25"  # Note the quotes around the version number
+    api_version: "1.48"  # Note the quotes around the version number
     metrics:
       container.uptime:
         enabled: true
@@ -68,26 +68,16 @@ exporters:
     endpoint: "apm-server:8200"
     tls:
       insecure: true
-#    headers:
-      # Elastic APM Server secret token
-#      Authorization: "ApiKey Z2hsNUpKWUJQT1VmUnR0OF9BeHU6bDBlWElkOTNRNWEzQmZHclRwbG9ndw=="
-
 
 service:
-#  extensions: [basicauth/client]
-#  telemetry:
-#    logs:
-#      level: "debug"
-#      development: true
-#      encoding: "json"
   pipelines:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
       exporters: [debug, otlp]
     metrics:
-      receivers: [otlp]
-      processors: [memory_limiter, batch]
+      receivers: [otlp, docker_stats]
+      processors: [memory_limiter, batch, resourcedetection/system, resourcedetection/docker]
       exporters: [debug, otlp]
     logs:
       receivers: [otlp]

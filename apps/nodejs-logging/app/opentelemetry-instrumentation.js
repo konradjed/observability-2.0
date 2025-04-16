@@ -1,3 +1,6 @@
+//logger for OTEL
+const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
@@ -32,6 +35,7 @@ const metricReader = new PeriodicExportingMetricReader({
 })
 
 const meterProvider = new MeterProvider({
+    resource: resource,
     readers: [metricReader],
 });
 
@@ -49,13 +53,6 @@ const sdk = new NodeSDK({
     }),
     instrumentations: [
         getNodeAutoInstrumentations(),
-        // {
-        //     '@opentelemetry/instrumentation-express': { enabled: true },
-        //     '@opentelemetry/instrumentation-http': { enabled: true },
-        //     '@opentelemetry/instrumentation-winston': { enabled: true },
-        //     '@opentelemetry/instrumentation-fs': { enabled: true },
-        //     '@opentelemetry/instrumentation-mongodb': { enabled: true },
-        // }),
     ],
 });
 

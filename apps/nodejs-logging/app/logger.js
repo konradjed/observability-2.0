@@ -13,6 +13,7 @@ const jsonFormat = winston.format.combine(
             const spanContext = activeSpan.spanContext();
             info.traceId = spanContext.traceId;
             info.spanId = spanContext.spanId;
+            info.parentSpanId = activeSpan ? activeSpan.parentSpanId : 'unknown-parent-span-id';
         }
         return info;
     })(),
