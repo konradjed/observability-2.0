@@ -1,0 +1,43 @@
+[project]
+name = "payment-service"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "konrad",email = "konrad.jed@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi (>=0.115.12,<0.116.0)",
+    "uvicorn (>=0.34.1,<0.35.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "python-json-logger (>=3.3.0,<4.0.0)"
+]
+
+[tool.poetry]
+name = "payment_service"
+version = "0.1.0"
+description = "A simple payment API with tracing & logging"
+packages = [{include = "app", from = "."}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115.12"
+uvicorn = "^0.34.1"
+requests = "^2.32.3"
+python-dotenv = "^1.1.0"
+python-json-logger = "^3.3.0"
+
+[tool.poetry.group.dev.dependencies]
+opentelemetry-api = "^1.32.1"
+opentelemetry-sdk = "^1.32.1"
+opentelemetry-exporter-otlp = "^1.32.1"
+opentelemetry-instrumentation = "^0.53b1"
+opentelemetry-instrumentation-fastapi = "^0.53b1"
+opentelemetry-instrumentation-requests = "^0.53b1"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

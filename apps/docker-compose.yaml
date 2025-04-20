@@ -1,0 +1,38 @@
+version: '3'
+x-logging: &default-logging
+  driver: fluentd
+  options:
+    fluentd-address: host.docker.internal:24224
+    tag: docker.{{.Name}}
+
+services:
+  nodejs-logging:
+    container_name: user-service
+    build: nodejs-logging
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - OTEL_SERVICE_NAME=user-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=local
+    logging: *default-logging
+
+  payment-service:
+    container_name: payment-service
+    build: payment-service
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - PYTHON_ENV=development
+      - LOG_LEVEL=debug
+      - OTEL_SERVICE_NAME=payment-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4318
+      - DEPLOYMENT_ENV=local
+    logging: *default-logging
