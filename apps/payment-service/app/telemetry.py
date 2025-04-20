@@ -24,6 +24,7 @@ def init_tracer_provider():
     resource = Resource(attributes={
         ResourceAttributes.SERVICE_NAME: settings.SERVICE_NAME,
         ResourceAttributes.TELEMETRY_SDK_NAME: "python",
+        ResourceAttributes.DEPLOYMENT_ENVIRONMENT: "local",
     })
     provider = TracerProvider(resource=resource)
 

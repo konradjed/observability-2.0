@@ -6,9 +6,9 @@ x-logging: &default-logging
     tag: docker.{{.Name}}
 
 services:
-  nodejs-logging:
+  user-service:
     container_name: user-service
-    build: nodejs-logging
+    build: user-service
     ports:
       - "3000:3000"
     extra_hosts:
