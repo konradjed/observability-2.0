@@ -1,0 +1,45 @@
+{
+  "info": {
+    "name": "Fee Calculator Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Calculate Fee - Success",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"amount\": 100.0 }"
+        },
+        "url": { "raw": "http://localhost:8080/api/fee-calculator/fee" }
+      },
+      "response": [
+        {
+          "name": "Success",
+          "status": "200 OK",
+          "body": "{ \"fee\": 10.0 }"
+        }
+      ]
+    },
+    {
+      "name": "Calculate Fee - Fail Negative",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{ \"amount\": -50.0 }" },
+        "url": { "raw": "http://localhost:8080/api/fee-calculator/fee" }
+      },
+      "response": [
+        {
+          "name": "Bad Request",
+          "status": "400 Bad Request",
+          "body": ""
+        }
+      ]
+    }
+  ]
+}

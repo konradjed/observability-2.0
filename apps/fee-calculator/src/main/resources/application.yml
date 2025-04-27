@@ -1,0 +1,10 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    export:
+      otlp:
+        enabled: true
+        endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}

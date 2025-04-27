@@ -9,8 +9,8 @@ receivers:
     protocols:
       http:
         endpoint: 0.0.0.0:4318
-#      grpc:
-#        endpoint: 0.0.0.0:4317
+      grpc:
+        endpoint: 0.0.0.0:4317
   docker_stats:
     endpoint: tcp://socat:2375  # Adjust this path based on your system
     collection_interval: 30s
@@ -53,8 +53,8 @@ processors:
 exporters:
   debug:
     verbosity: detailed
-    sampling_initial: 5
-    sampling_thereafter: 200
+    sampling_initial: 2
+    sampling_thereafter: 1
 #  otlp/elastic:
 #    endpoint: "apm-server:8200"
 #    headers:
@@ -74,12 +74,12 @@ service:
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlp]
+      exporters: [otlp]
     metrics:
       receivers: [otlp, docker_stats]
       processors: [memory_limiter, batch, resourcedetection/system, resourcedetection/docker]
-      exporters: [debug, otlp]
+      exporters: [otlp]
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [debug, otlp]
+      exporters: [otlp]

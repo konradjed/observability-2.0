@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.services.user_service import fetch_user
+from services.user_service import fetch_user
+from services.payment_fee_service import fetch_fee
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,6 +15,14 @@ async def create_payment(payload: dict):
         raise HTTPException(status_code=400, detail="user_id and amount are required")
 
     user = fetch_user(user_id)
-    # … payment gateway / DB logic here …
-    logger.info("Processed payment", extra={"user_id": user_id, "amount": amount})
-    return {"status": "success", "user": user, "amount": amount}
+
+    # calculate fee
+    fee = fetch_fee(amount)
+
+    logger.info("Processed payment", extra={"user_id": user_id, "amount": amount, "fee": fee})
+    return {
+            "status": "success",
+            "user": user,
+            "amount": amount,
+            "fee": fee,
+        }

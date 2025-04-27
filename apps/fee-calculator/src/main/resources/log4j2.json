@@ -1,0 +1,29 @@
+{
+  "configuration": {
+    "status": "WARN",
+    "name": "JSONConfig",
+    "packages": [],
+    "appenders": {
+      "Console": {
+        "name": "Console",
+        "target": "SYSTEM_OUT",
+        "Layout": {
+          "type": "JsonLayout",
+          "complete": false,
+          "compact": true,
+          "eventEol": true
+        }
+      }
+    },
+    "loggers": {
+      "root": {
+        "level": "INFO",
+        "appenderRefs": { "ref": [ { "ref": "Console" } ] }
+      },
+      "logger": [
+        { "name": "org.springframework", "level": "INFO" },
+        { "name": "com.example.feecalculator", "level": "DEBUG" }
+      ]
+    }
+  }
+}

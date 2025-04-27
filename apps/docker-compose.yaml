@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 x-logging: &default-logging
   driver: fluentd
   options:
@@ -31,8 +31,24 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       - PYTHON_ENV=development
-      - LOG_LEVEL=debug
+      - LOG_LEVEL=info
       - OTEL_SERVICE_NAME=payment-service
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4318
       - DEPLOYMENT_ENV=local
+      - FLASK_ENV=local
+      - OTEL_RESOURCE_ATTRIBUTES="service.name=payment-service,service.version=0.0.1,deployment.environment=local"
     logging: *default-logging
+  fee-calculator:
+    container_name: fee-calculator
+    build: fee-calculator
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=otlp
+    logging: *default-logging
+
+
