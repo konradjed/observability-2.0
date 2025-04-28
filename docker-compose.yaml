@@ -1,4 +1,4 @@
-#version: '3'
+version: '3.8'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
@@ -30,18 +30,7 @@ services:
     ports:
       - "8200:8200"
     environment:
-#      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-#      - ELASTICSEARCH_USERNAME=elastic
-#      - ELASTICSEARCH_USERNAME=qcPT-3_vxi73dN2n_cKF
-#      - kibana.host=http://kibana:5601
-#      - logging.level=debug
       - apm-server.rum.enabled=true
-#      - setup.kibana.host=kibana:5601
-#      - setup.template.settings.index.number_of_replicas=0
-#      - apm-server.kibana.enabled=true
-#      - apm-server.kibana.host=kibana:5601
-#      - output.elasticsearch.username=elastic
-#      - output.elasticsearch.password=changeme
     volumes:
       - ./apm/config.yaml:/usr/share/apm-server/apm-server.yml
     depends_on:

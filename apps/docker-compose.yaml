@@ -36,7 +36,7 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4318
       - DEPLOYMENT_ENV=local
       - FLASK_ENV=local
-      - OTEL_RESOURCE_ATTRIBUTES="service.name=payment-service,service.version=0.0.1,deployment.environment=local"
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=payment-service,service.version=0.0.1,deployment.environment=local
     logging: *default-logging
   fee-calculator:
     container_name: fee-calculator
@@ -51,4 +51,20 @@ services:
       - OTEL_METRICS_EXPORTER=otlp
     logging: *default-logging
 
+  postgres:
+    image: postgres:14
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    logging: *default-logging
+
+volumes:
+  postgres_data:
 
